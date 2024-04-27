@@ -173,7 +173,6 @@
 //   console.log(`Server running on http://localhost:${PORT}`);
 // });
 
-
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
@@ -188,8 +187,13 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: true, // Use headless mode
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // Required for running on cloud platforms like Heroku
+      headless: true, // Run in headless mode
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process", // Added for Heroku
+      ],
     });
 
     const page = await browser.newPage();
