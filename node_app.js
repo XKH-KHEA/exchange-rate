@@ -92,14 +92,16 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-app.get("/", async (req, res) => { // Changed the route from "" to "/"
+app.get("/", async (req, res) => {
+  // Changed the route from "" to "/"
   try {
     const today = new Date().toISOString().split("T")[0];
-    const dateFilter = req.query.date || today;
+    const dateFilter = req.query.date || "2024-04-25";
 
     const browser = await puppeteer.launch({
       headless: true, // Changed "new" to true for headless mode
-      executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     });
 
     const page = await browser.newPage();
