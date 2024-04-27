@@ -99,7 +99,7 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || "2024-04-25";
 
     const browser = await puppeteer.launch({
-      headless: true, // Changed "new" to true for headless mode
+      headless: "new", // Changed "new" to true for headless mode
       executablePath:
         "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     });
