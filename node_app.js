@@ -192,9 +192,8 @@ app.get("/", async (req, res) => {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--single-process" // Added for Heroku
+        "--single-process", // Added for Heroku
       ],
-      executablePath: await chromium.executablePath, // Use bundled Chromium
     });
 
     const page = await browser.newPage();
