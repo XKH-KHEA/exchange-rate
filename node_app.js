@@ -187,14 +187,7 @@ app.get("/", async (req, res) => {
 
     const browser = await puppeteer.launch({
       headless: "new",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--single-process", // Added for Heroku
-      ],
-      executablePath:
-        await "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // Use bundled Chromium
+      ignoreDefaultArgs: ["--disable-extensions"],
     });
 
     const page = await browser.newPage();
