@@ -1,7 +1,0 @@
-1) I've installed IIS node from https://github.com/tjanczuk/iisnode/wiki/iisnode-releases [iisnode for iis 7/8(x64)]
-
-2) Installed URL Rewrite module from https://www.iis.net/downloads/microsoft/url-rewrite
-
-3) Placed all node app files at a certain location.
-
-4) From that project directory, issued npm install to install required packages.
