@@ -172,6 +172,7 @@
 // app.listen(PORT, () => {
 //   console.log(`Server running on http://localhost:${PORT}`);
 // });
+
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
@@ -186,8 +187,14 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: "new",
-      ignoreDefaultArgs: ["--disable-extensions"],
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--single-process" // Added for Heroku
+      ],
+      executablePath: await chromium.executablePath, // Use bundled Chromium
     });
 
     const page = await browser.newPage();
