@@ -1,0 +1,9 @@
+services:
+  - name: your-service-name
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    memory: 512Mi
+    automaticDeploy:
+      enabled: true

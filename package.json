@@ -4,8 +4,13 @@
   "description": "An API to fetch exchange rates from NBC Cambodia website",
   "main": "node_app.js",
   "scripts": {
-    "start": "node node_app.js"
+    "start": "node node_app.js",
+    "dev": "node node_app.js",
+    "test": "echo \"Error: no test\"&& exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
