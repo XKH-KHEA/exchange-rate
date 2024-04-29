@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const requestPromise = require("request-promise");
 const cheerio = require("cheerio");
+const puppeteer = require("puppeteer");
+const dotenv = require("dotenv").config();
 
 const app = express();
 app.use(cors());
@@ -11,14 +13,28 @@ app.get("/", async (req, res) => {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || today;
 
-    console.log("Date filter:", dateFilter); // Log date filter to check if it's received correctly
+    //console.log("Date filter:", dateFilter); // Log date filter to check if it's received correctly
 
-    const url = `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`;
-    console.log("URL:", url); // Log the constructed URL to check if the date filter is appended
+    // const url = `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`;
+    // console.log("URL:", url); // Log the constructed URL to check if the date filter is appended
 
-    const html = await requestPromise(url);
-    const $ = cheerio.load(html);
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
 
+    // Navigate the page to a URL
+    await page.goto("https://www.nbc.gov.kh/english/economic_research/exchange_rate.php", { waitUntil: "domcontentloaded" });
+
+    await page.focus("#datepicker");
+    await page.keyboard.down("Control");
+    await page.keyboard.press("A");
+    await page.keyboard.up("Control");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.type(date);
+    await page.click('input[type="submit"]');
+    await page.waitForTimeout(2000);
+
+    const content = await page.content();
+    const $ = cheerio.load(content);
     const exchangeRates = [];
 
     $("table.tbl-responsive tr").each((index, element) => {
