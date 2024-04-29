@@ -15,6 +15,7 @@ app.get("/OData/ExchangeRateService", async (req, res) => {
       headless: "new",
       executablePath:
         "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      ignoreDefaultArgs: ["--disable-extensions"]
     });
 
     const page = await browser.newPage();
@@ -22,7 +23,7 @@ app.get("/OData/ExchangeRateService", async (req, res) => {
     await page.goto(
       "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
     );
-    await new Promise(resolve => setTimeout(resolve, 2000)); 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     await page.$eval(
       "#datepicker",
@@ -33,7 +34,7 @@ app.get("/OData/ExchangeRateService", async (req, res) => {
     );
 
     await page.click('input[name="view"]');
-    await new Promise(resolve => setTimeout(resolve, 2000)); 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const content = await page.content();
     const $ = cheerio.load(content);
