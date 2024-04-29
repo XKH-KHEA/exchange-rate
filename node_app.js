@@ -1,4 +1,3 @@
-
 const express = require("express");
 const puppeteer = require("puppeteer"); // Use puppeteer-core
 const cheerio = require("cheerio");
@@ -13,9 +12,7 @@ app.get("/", async (req, res) => {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || "2024-04-25";
 
-    const browser = await puppeteer.launch({
-      headless: 'new', // Changed "new" to true for headless mode
-    });
+    const browser = await puppeteer.launch({ headless: "new" });
 
     const page = await browser.newPage();
 
