@@ -1,62 +1,59 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
-const dotenv = require("dotenv").config();
+const cors = require("cors");
+const requestPromise = require("request-promise");
+const cheerio = require("cheerio");
+
 const app = express();
+app.use(cors());
 
-app.get("/", (req, res) => {
-  const date = req.query.date ?? "";
+app.get("/", async (req, res) => {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const dateFilter = req.query.date || today;
 
-  scrapeNBC(date)
-    .then(function (data) {
-      res.setHeader("Content-Type", "text/plain");
-      res.send(data);
-    })
-    .catch(function (e) {
-      res.status(500, {
-        error: e,
-      });
+    console.log("Date filter:", dateFilter); // Log date filter to check if it's received correctly
+
+    const url = `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`;
+    console.log("URL:", url); // Log the constructed URL to check if the date filter is appended
+
+    const html = await requestPromise(url);
+    const $ = cheerio.load(html);
+
+    const exchangeRates = [];
+
+    $("table.tbl-responsive tr").each((index, element) => {
+      if (index > 0) {
+        const columns = $(element).find("td");
+        const currency = columns.eq(0).text().trim();
+        const Symbol = columns.eq(1).text().trim();
+        const unit = columns.eq(2).text().trim();
+        const bid = columns.eq(3).text().trim();
+        const ask = columns.eq(4).text().trim();
+
+        exchangeRates.push({ currency, Symbol, unit, bid, ask });
+      }
     });
-});
 
-async function scrapeNBC(date) {
-  // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({ headless: "new" });
-  const page = await browser.newPage();
+    const officialExchangeRateRow = $('td:contains("Official Exchange Rate")');
+    const officialExchangeRateText = officialExchangeRateRow.text();
+    const officialExchangeRateMatch = officialExchangeRateText.match(/(\d+)/);
+    const officialExchangeRate = officialExchangeRateMatch
+      ? parseInt(officialExchangeRateMatch[1])
+      : null;
 
-  // Navigate the page to a URL
-  await page.goto(
-    "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php",
-    { waitUntil: "domcontentloaded" }
-  );
-
-  await page.focus("#datepicker");
-  await page.keyboard.down("Control");
-  await page.keyboard.press("A");
-  await page.keyboard.up("Control");
-  await page.keyboard.press("Backspace");
-  await page.keyboard.type(date);
-  await page.click('input[type="submit"]');
-
-  let data = await page.evaluate(() => {
-    let date = document.querySelector(
-      "#fm-ex > table > tbody > tr:nth-child(1) > td > font"
-    ).innerText;
-    let rate = document.querySelector(
-      "#fm-ex > table > tbody > tr:nth-child(2) > td > font"
-    ).innerText;
-    return {
-      exchange_date: date,
-      exchange_rate: rate,
-      currency,
-      Symbol,
-      unit,
-      bid,
-      ask,
+    const response = {
+      ok: true,
+      value: exchangeRates,
+      officialExchangeRate,
+      date: dateFilter,
     };
-  });
-  await browser.close();
-  return data;
-}
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
