@@ -2,11 +2,9 @@
   "name": "exchange-rate-api",
   "version": "1.0.0",
   "description": "An API to fetch exchange rates from NBC Cambodia website",
-  "main": "apps.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node apps.js",
-    "dev": "node apps.js",
-    "test": "echo \"Error: no test\"&& exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "khea",

@@ -1,23 +1,30 @@
 const express = require("express");
-const cors = require("cors");
-const requestPromise = require("request-promise");
+const puppeteer = require("puppeteer"); // Use puppeteer-core
 const cheerio = require("cheerio");
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
 
-app.get("/", async (req, res) => {
+app.get("/OData/ExchangeRateService", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || today;
 
-    console.log("Date filter:", dateFilter); // Log date filter to check if it's received correctly
+    const browser = await puppeteer.launch({
+      headless: "new",
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    });
 
-    const url = `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`;
+    const page = await browser.newPage();
 
-    const html = await requestPromise(url);
-    const $ = cheerio.load(html);
-    await $.$eval(
+    await page.goto(
+      "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
+    );
+    await new Promise(resolve => setTimeout(resolve, 2000)); 
+
+    await page.$eval(
       "#datepicker",
       (datepicker, dateFilter) => {
         datepicker.value = dateFilter;
@@ -25,7 +32,12 @@ app.get("/", async (req, res) => {
       dateFilter
     );
 
-    await $.click('input[name="view"]');
+    await page.click('input[name="view"]');
+    await new Promise(resolve => setTimeout(resolve, 2000)); 
+
+    const content = await page.content();
+    const $ = cheerio.load(content);
+
     const exchangeRates = [];
 
     $("table.tbl-responsive tr").each((index, element) => {
@@ -48,6 +60,8 @@ app.get("/", async (req, res) => {
       ? parseInt(officialExchangeRateMatch[1])
       : null;
 
+    await browser.close();
+
     const response = {
       ok: true,
       value: exchangeRates,
@@ -58,7 +72,12 @@ app.get("/", async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    if (error instanceof puppeteer.errors.TimeoutError) {
+      res.status(500).json({ error: "Timeout Error" });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 });
 
