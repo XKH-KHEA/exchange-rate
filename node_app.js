@@ -6,7 +6,7 @@ const cheerio = require("cheerio");
 const app = express();
 app.use(cors());
 
-app.get("/", async (req, res) => {
+app.get("date/", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || today;
