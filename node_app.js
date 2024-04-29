@@ -9,7 +9,7 @@ app.use(cors());
 app.get("/", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
-    const dateFilter = req.query.date || "2024-04-25";
+    const dateFilter = req.query.date || today;
 
     const options = {
       uri: `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`,
