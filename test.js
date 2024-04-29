@@ -83,7 +83,7 @@
 // // const PORT = 5000;
 // // app.listen(process.PORT, () => {
 // //   console.log(`http://localhost:${PORT}`);
-// });
+// // });
 // const express = require("express");
 // const puppeteer = require("puppeteer"); // Use puppeteer-core
 // const cheerio = require("cheerio");
@@ -99,9 +99,7 @@
 //     const dateFilter = req.query.date || "2024-04-25";
 
 //     const browser = await puppeteer.launch({
-//       headless: "new", // Changed "new" to true for headless mode
-//       executablePath:
-//         "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+//       headless: true, // Changed "new" to true for headless mode
 //     });
 
 //     const page = await browser.newPage();
@@ -172,6 +170,3 @@
 // app.listen(PORT, () => {
 //   console.log(`Server running on http://localhost:${PORT}`);
 // });
-
-
-
