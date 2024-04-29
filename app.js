@@ -100,7 +100,10 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || "2024-04-25";
 
     const browser = await puppeteer.launch({
-      headless: true, // Changed "new" to true for headless mode
+      headless: "new",
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      // Changed "new" to true for headless mode
     });
 
     const page = await browser.newPage();
@@ -171,5 +174,3 @@ const PORT = process.env.PORT || 5000; // Changed process.PORT to process.env.PO
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
-
