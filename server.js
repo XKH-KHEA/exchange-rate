@@ -1,5 +1,3 @@
-
-
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
@@ -8,21 +6,22 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 
-app.get("/", async (req, res) => {
+app.get("/data", async (req, res) => {
   try {
     const dateFilter = req.query.date || "2024-01-26";
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--single-process",
         "--no-zygote",
       ],
-      executablePath: (process.env.NODE_ENV === "production"
-        ? process.env.PUPEPTEER_EXECUTTABLE_PATH
-        : puppeteer.executablePath()),
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPEPTEER_EXECUTTABLE_PATH
+          : puppeteer.executablePath(),
       //   "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
     });
 
@@ -35,8 +34,7 @@ app.get("/", async (req, res) => {
 
     // Increase the navigation timeout to 60 seconds (60000 milliseconds)
     await page.goto(
-      "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php",
-      { timeout: 60000 }
+      "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
     );
 
     await page.waitForTimeout(2000);
