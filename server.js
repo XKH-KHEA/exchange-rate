@@ -108,8 +108,8 @@ app.get("/", async (req, res) => {
 
     // Increase the navigation timeout to 60 seconds (60000 milliseconds)
     await page.goto(
-      "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
-      // { timeout: 60000 }
+      "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php",
+       { timeout: 60000 }
     );
 
     await page.waitForTimeout(2000);
