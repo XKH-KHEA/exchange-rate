@@ -100,7 +100,7 @@ app.get("/", async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       executablePath:
-            "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe", 
+        "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
@@ -171,6 +171,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log("listening");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
