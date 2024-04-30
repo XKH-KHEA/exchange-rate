@@ -175,11 +175,11 @@
 // app.listen(PORT, () => {
 //   console.log(`Server running on http://localhost:${PORT}`);
 // });
-
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const cors = require("cors");
+const { dataUriToBuffer } = require("data-uri-to-buffer"); // Import dataUriToBuffer from the data-uri-to-buffer package
 
 const app = express();
 app.use(cors());
