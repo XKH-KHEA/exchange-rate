@@ -2,9 +2,9 @@
   "name": "exchange-rate-api",
   "version": "1.0.0",
   "description": "An API to fetch exchange rates from NBC Cambodia website",
-  "main": "apps.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node apps.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "khea",
@@ -12,8 +12,9 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "puppeteer": "^22.7.1",
+    "express": "^4.18.2",
+    "puppeteer": "^21.9.0",
+    "puppeteer-core": "^21.9.0",
     "request-promise": "^4.2.6"
   }
 }
