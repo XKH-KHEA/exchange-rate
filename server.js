@@ -1,5 +1,5 @@
 const express = require("express");
-const puppeteer = require("puppeteer"); // Use puppeteer-core
+const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const cors = require("cors");
 
@@ -12,12 +12,12 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: "new",
-      executablePath:
-        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-      ignoreDefaultArgs: ["--disable-extensions"],
-      args: ["--no-sandbox", "--use-gl=egl", "--disable-setuid-sandbox"],
-      ignoreHTTPSErrors: true,
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+      ],
     });
 
     const page = await browser.newPage();
@@ -25,7 +25,7 @@ app.get("/", async (req, res) => {
     await page.goto(
       "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
     );
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await page.waitForTimeout(2000);
 
     await page.$eval(
       "#datepicker",
@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
     );
 
     await page.click('input[name="view"]');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await page.waitForTimeout(2000);
 
     const content = await page.content();
     const $ = cheerio.load(content);
