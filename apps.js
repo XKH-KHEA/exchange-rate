@@ -17,15 +17,7 @@ app.get("/", async (req, res) => {
 
     const html = await requestPromise(url);
     const $ = cheerio.load(html);
-    // await $.$eval(
-    //   "#datepicker",
-    //   (datepicker, dateFilter) => {
-    //     datepicker.value = dateFilter;
-    //   },
-    //   dateFilter
-    // );
 
-    // await $.click('input[name="view"]');
     const exchangeRates = [];
 
     $("table.tbl-responsive tr").each((index, element) => {
