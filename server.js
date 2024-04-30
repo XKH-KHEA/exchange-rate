@@ -190,8 +190,8 @@ app.get("/", async (req, res) => {
 
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath:
-        "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
+      // executablePath:
+      //   "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
