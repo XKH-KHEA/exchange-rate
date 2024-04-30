@@ -4,7 +4,7 @@
   "description": "An API to fetch exchange rates from NBC Cambodia website",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon apps.js"
   },
   "keywords": [],
   "author": "khea",
