@@ -8,7 +8,8 @@ app.use(cors());
 
 app.get("/data", async (req, res) => {
   try {
-    const dateFilter = req.query.date || "2024-01-26";
+    const today = new Date().toISOString().split("T")[0];
+    const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
       headless: "new",
@@ -22,7 +23,6 @@ app.get("/data", async (req, res) => {
         process.env.NODE_ENV === "production"
           ? process.env.PUPEPTEER_EXECUTTABLE_PATH
           : puppeteer.executablePath(),
-      //   "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
     });
 
     const page = await browser.newPage();
