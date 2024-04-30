@@ -12,7 +12,9 @@ app.get("/OData/ExchangeRateService", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
       ignoreDefaultArgs: ["--disable-extensions"],
       args: ["--no-sandbox", "--use-gl=egl", "--disable-setuid-sandbox"],
       ignoreHTTPSErrors: true,
