@@ -10,8 +10,7 @@ app.get("/", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || today;
-
-    console.log("Date filter:", dateFilter); // Log date filter to check if it's received correctly
+    // Log date filter to check if it's received correctly
 
     const url = `https://www.nbc.gov.kh/english/economic_research/exchange_rate.php?datepicker=${dateFilter}`;
 
