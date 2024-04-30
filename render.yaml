@@ -1,6 +1,6 @@
-
 services:
   - type: web
     name: exchange-rate
+    runtime: nodejs
     buildCommand: npm install --production
     startCommand: node server.js
