@@ -179,6 +179,7 @@ const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const cors = require("cors");
+require("dotenv").config();
 const { dataUriToBuffer } = require("data-uri-to-buffer"); // Import dataUriToBuffer from the data-uri-to-buffer package
 
 const app = express();
@@ -189,21 +190,29 @@ app.get("/", async (req, res) => {
     const dateFilter = req.query.date || "2024-01-26";
 
     const browser = await puppeteer.launch({
-      headless: true,
-      // executablePath:
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath: (process.env.NODE_ENV = "production"
+        ? process.env.PUPEPTEER_EXECUTTABLE_PATH
+        : puppeteer.executablePath()),
       //   "C:\\Users\\khea\\.cache\\puppeteer\\chrome\\win64-124.0.6367.78\\chrome-win64\\chrome.exe",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
 
     // Set user agent
-    await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36");
+    await page.setUserAgent(
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+    );
 
     // Increase the navigation timeout to 60 seconds (60000 milliseconds)
     await page.goto(
       "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php",
-       { timeout: 60000 }
+      { timeout: 60000 }
     );
 
     await page.waitForTimeout(2000);
