@@ -1,11 +1,12 @@
+
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const cors = require("cors");
 require("dotenv").config();
+
 const app = express();
 app.use(cors());
-
 
 app.get("/data", async (req, res) => {
   try {
@@ -14,21 +15,15 @@ app.get("/data", async (req, res) => {
 
     const browser = await puppeteer.launch({
       headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath:
         process.env.NODE_ENV === "production"
-          ? process.env.PUPEPTEER_EXECUTTABLE_PATH
-          : puppeteer.executablePath(),
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : undefined, // Use default executable path
     });
 
     const page = await browser.newPage();
 
-    // Set user agent
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
     );
@@ -38,7 +33,6 @@ app.get("/data", async (req, res) => {
     );
 
     await page.waitForSelector("#datepicker");
-
     await page.$eval(
       "#datepicker",
       (datepicker, dateFilter) => {
@@ -47,7 +41,10 @@ app.get("/data", async (req, res) => {
       dateFilter
     );
 
-    await page.click('input[name="view"]');
+    await Promise.all([
+      page.waitForNavigation(), // Wait for page navigation
+      page.click('input[name="view"]'), // Click on the "View" button
+    ]);
 
     await page.waitForSelector("table.tbl-responsive");
 
@@ -60,12 +57,12 @@ app.get("/data", async (req, res) => {
       if (index > 0) {
         const columns = $(element).find("td");
         const currency = columns.eq(0).text().trim();
-        const Symbol = columns.eq(1).text().trim();
+        const symbol = columns.eq(1).text().trim();
         const unit = columns.eq(2).text().trim();
         const bid = columns.eq(3).text().trim();
         const ask = columns.eq(4).text().trim();
 
-        exchangeRates.push({ currency, Symbol, unit, bid, ask });
+        exchangeRates.push({ currency, symbol, unit, bid, ask });
       }
     });
 
@@ -88,15 +85,7 @@ app.get("/data", async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error("Error:", error);
-
-    if (error instanceof puppeteer.errors.TimeoutError) {
-      res.status(500).json({ error: "Timeout Error" });
-    } else if (error.message === "Navigating frame was detached") {
-      // Handle detached frame error
-      res.status(500).json({ error: "Frame detached error" });
-    } else {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    res.status(500).json({ error: error.message });
   }
 });
 
