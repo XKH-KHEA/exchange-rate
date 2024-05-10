@@ -6,13 +6,14 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 
+
 app.get("/data", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -32,12 +33,11 @@ app.get("/data", async (req, res) => {
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
     );
 
-    // Increase the navigation timeout to 60 seconds (60000 milliseconds)
     await page.goto(
       "https://www.nbc.gov.kh/english/economic_research/exchange_rate.php"
     );
 
-    await page.waitForTimeout(2000);
+    await page.waitForSelector("#datepicker");
 
     await page.$eval(
       "#datepicker",
@@ -48,7 +48,8 @@ app.get("/data", async (req, res) => {
     );
 
     await page.click('input[name="view"]');
-    await page.waitForTimeout(2000);
+
+    await page.waitForSelector("table.tbl-responsive");
 
     const content = await page.content();
     const $ = cheerio.load(content);
