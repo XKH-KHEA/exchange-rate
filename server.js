@@ -4,23 +4,10 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const cors = require("cors");
 require("dotenv").config();
-const exchangeService = require("./server1");
 
 const app = express();
 app.use(cors());
 
-app.get("/data1", async (req, res) => {
-  try {
-    const today = new Date().toISOString().split("T")[0];
-    const dateFilter = req.query.date || today;
-
-    const result = await exchangeService.fetchDataForDate(dateFilter);
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 app.get("/data", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
@@ -34,7 +21,7 @@ app.get("/data", async (req, res) => {
           ? process.env.PUPPETEER_EXECUTABLE_PATH
           : undefined, // Use default executable path
     });
-  
+
     const page = await browser.newPage();
 
     await page.setUserAgent(
