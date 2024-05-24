@@ -14,7 +14,7 @@ app.get("/data", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: 'new',
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath:
         process.env.NODE_ENV === "production"
