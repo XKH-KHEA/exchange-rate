@@ -73,19 +73,19 @@ app.get("/data", async (req, res) => {
       : null;
 
     await browser.close();
-    bid = officialExchangeRate;
-    const values = [
-      {
+    
+    if (officialExchangeRate) {
+      exchangeRates.push({
         currency: "USD",
         symbol: "USD/KHR",
         unit: "1",
-        bid,
+        bid: officialExchangeRate,
         ask: "",
-      },
-    ];
+      });
+    }
+
     const response = {
       ok: true,
-      values,
       value: exchangeRates,
     };
 
