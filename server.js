@@ -1,4 +1,3 @@
-
 const express = require("express");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
@@ -14,7 +13,7 @@ app.get("/data", async (req, res) => {
     const dateFilter = req.query.date || today;
 
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath:
         process.env.NODE_ENV === "production"
@@ -74,12 +73,20 @@ app.get("/data", async (req, res) => {
       : null;
 
     await browser.close();
-
+    bid = officialExchangeRate;
+    const values = [
+      {
+        currency: "USD",
+        symbol: "USD/KHR",
+        unit: "1",
+        bid,
+        ask: "",
+      },
+    ];
     const response = {
       ok: true,
+      values,
       value: exchangeRates,
-      officialExchangeRate,
-      date: dateFilter,
     };
 
     res.json(response);
